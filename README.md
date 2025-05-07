@@ -9,3 +9,9 @@ docker pull ...
 ```
 
 The images have basic production optimizations applied.
+
+
+## Notes
+
+see https://github.com/eXist-db/existdb-ansible-role
+see 

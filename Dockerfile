@@ -1,25 +1,21 @@
-ARG EXIST_BASE=dev6-nonroot-j8
+ARG EXIST_BASE=6.4.0-nonroot-j8
 
-FROM debian:12-slim as builder
+FROM debian:12-slim AS builder
 
-ARG CRYPTO_VERSION=6.0.1
-ARG JWT_VERSION=2.0.0
-ARG PUBLISHER_LIB_VERSION=4.0.1
+ARG PUBLISHER_LIB_VERSION=4.0.2
 ARG ROUTER_VERSION=1.8.1
 ARG TEMPLATING_VERSION=1.2.1
 
 
 WORKDIR /tmp/
 
-RUN curl -L -o 001.xar https://exist-db.org/exist/apps/public-repo/public/expath-crypto-module-${CRYPTO_VERSION}.xar
-RUN curl -L -o 002.xar http://exist-db.org/exist/apps/public-repo/public/jwt-${JWT_VERSION}.xar
-RUN curl -L -o 003.xar http://exist-db.org/exist/apps/public-repo/public/tei-publisher-lib-${PUBLISHER_LIB_VERSION}.xar
-RUN curl -L -o 004.xar http://exist-db.org/exist/apps/public-repo/public/roaster-${ROUTER_VERSION}.xar
-RUN curl -L -o 005.xar http://exist-db.org/exist/apps/public-repo/public/templating-${TEMPLATING_VERSION}.xar
+RUN curl -L -o 001.xar http://exist-db.org/exist/apps/public-repo/public/tei-publisher-lib-${PUBLISHER_LIB_VERSION}.xar
+RUN curl -L -o 002.xar http://exist-db.org/exist/apps/public-repo/public/roaster-${ROUTER_VERSION}.xar
+RUN curl -L -o 003.xar http://exist-db.org/exist/apps/public-repo/public/templating-${TEMPLATING_VERSION}.xar
 
-FROM duncdrum/existdb:${EXIST_BASE} as conf
+FROM duncdrum/existdb:${EXIST_BASE} AS conf
 
-FROM eplusorg/xml:main as mod
+FROM eplusorg/xml:main AS mod
 
 COPY conf-transform.xsl /tmp
 COPY --from=conf /exist/etc/conf.xml /tmp
@@ -32,9 +28,6 @@ RUN java -jar /opt/saxon/run.sh -s:/tmp/conf.xml -xsl:/tmp/conf-transform.xsl -o
 FROM duncdrum/existdb:${EXIST_BASE}
 
 ARG USR=nonroot
-ARG NER_ENDPOINT=http://localhost:8001
-ENV CONTEXT_PATH=auto
-ENV PROXY_CACHING=false
 
 USER ${USR}
 

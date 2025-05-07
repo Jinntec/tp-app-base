@@ -6,13 +6,13 @@ on:
     branches:
       - main
       - "release/*"
-
     # Publish `v1.2.3` tags as releases.
     tags:
       - v*
-
   pull_request:
     branches: [main]
+  schedule: 
+      - cron: "11 */8 * * *"  
 
   workflow_dispatch:
 
@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        EXIST_BASE: [dev6-nonroot-j8, release-nonroot, latest]
+        EXIST_BASE: [6.4.0-nonroot-j8, release-nonroot-j8, latest-nonroot]
     # NOTE (DP): Test on PRs and pushes
     if: github.ref == 'refs/heads/main' || github.base_ref ==  'main'
     steps:
@@ -47,7 +47,7 @@ jobs:
         id: buildx
         with:
           install: true
-
+    
       - name: Install bats
         # run: sudo apt-get install bats libsaxonb-java
         run: sudo apt-get install bats libsaxonb-java
@@ -56,8 +56,8 @@ jobs:
         run: docker image ls
 
       # TODO(DP) needs adjusting for multi-stage see #5
-      - name: Modify config files
-        run: saxonb-xslt -s:dump/exist-distribution-${{ env.EXIST_VER }}/etc/log4j2.xml -xsl:log4j2-docker.xslt -o:log4j2.xml
+      # - name: Modify config files
+      #   run: saxonb-xslt -s:dump/exist-distribution-${{ env.EXIST_VER }}/etc/log4j2.xml -xsl:log4j2-docker.xslt -o:log4j2.xml
 
       # BUILD
       - name: Build default images for testing on CI
@@ -67,10 +67,19 @@ jobs:
           file: ./Dockerfile
           load: true
           tags: ${{ env.TEST_TAG }}
+          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
+
+    # TEST
+      - name: Start exist-ci containers
+        run: |
+          docker run -dit -p 8080:8080 --name exist-ci --rm ${{ env.TEST_TAG }}
+          
+      - name: Run tests
+        run: bats --tap test/*.bats
 
   push:
     # Ensure test job passes before pushing image.
-    needs: test
+    needs: build
 
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
@@ -115,14 +124,17 @@ jobs:
       #     password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push image
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/tags/v*'
         uses: docker/build-push-action@v6
         with:
           context: .
           platforms: linux/amd64,linux/arm64
           build-args: |
-            ${{ EXIST_BASE }}
+            release-nonroot-j8
           builder: ${{ steps.buildx.outputs.name }}
           push: true
+          sbom: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
