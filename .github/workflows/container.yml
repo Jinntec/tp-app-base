@@ -49,7 +49,6 @@ jobs:
           install: true
     
       - name: Install bats
-        # run: sudo apt-get install bats libsaxonb-java
         run: sudo apt-get install bats libsaxonb-java
 
       - name: Check local images
