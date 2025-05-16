@@ -54,10 +54,6 @@ jobs:
       - name: Check local images
         run: docker image ls
 
-      # TODO(DP) needs adjusting for multi-stage see #5
-      # - name: Modify config files
-      #   run: saxonb-xslt -s:dump/exist-distribution-${{ env.EXIST_VER }}/etc/log4j2.xml -xsl:log4j2-docker.xslt -o:log4j2.xml
-
       # BUILD
       - name: Build default images for testing on CI
         uses: docker/build-push-action@v6
@@ -129,7 +125,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           build-args: |
-            release-nonroot-j8
+            6.2.0-nonroot-j8
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           sbom: true
