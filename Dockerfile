@@ -1,4 +1,4 @@
-ARG EXIST_BASE=6.2.0-nonroot-j8
+ARG EXIST_BASE=6.2.0
 
 FROM duncdrum/existdb:${EXIST_BASE} AS conf
 
@@ -21,7 +21,7 @@ COPY xslt/web-transform.xsl web-transform.xsl
 RUN xsltproc conf-transform.xsl conf.xml > conf_prod.xml
 RUN xsltproc web-transform.xsl web.xml > web_prod.xml
 
-FROM duncdrum/existdb:${EXIST_BASE}
+FROM duncdrum/existdb:${EXIST_BASE}-nonroot
 
 ARG PUBLISHER_LIB_VERSION=4.0.2
 ARG ROUTER_VERSION=1.9.1
