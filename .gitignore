@@ -8,3 +8,4 @@
 etc/
 xslt/adjust-conf-files.xsl
 xslt/modify_conf.xq
+tmp/

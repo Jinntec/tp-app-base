@@ -10,8 +10,8 @@ on:
       - v*
   pull_request:
     branches: [main]
-  schedule: 
-      - cron: "11 */8 * * *"  
+  schedule:
+    - cron: "11 */8 * * *"
 
   workflow_dispatch:
 
@@ -46,7 +46,7 @@ jobs:
         id: buildx
         with:
           install: true
-    
+
       - name: Install bats
         run: sudo apt-get install bats
 
@@ -63,12 +63,12 @@ jobs:
           tags: ${{ env.TEST_TAG }}
           # cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
 
-    # TEST
+      # TEST
       - name: Start exist-ci containers
         run: |
           docker run -dit -p 8080:8080 --name exist --rm ${{ env.TEST_TAG }}
           sleep 35s
-          
+
       - name: Run tests
         run: bats --tap test/*.bats
 
@@ -125,7 +125,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           build-args: |
-            6.2.0
+            6.4.0
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           sbom: true

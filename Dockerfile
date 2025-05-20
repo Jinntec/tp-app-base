@@ -5,8 +5,6 @@ FROM duncdrum/existdb:${EXIST_BASE} AS conf
 # RUN ["busybox", "rm", "-rf", "/exist/autodeploy/"]
 
 FROM debian:12-slim AS builder
-
-
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update && apt-get -y install apt-utils && apt-get -y dist-upgrade && apt-get install -y --no-install-recommends \
@@ -14,13 +12,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 WORKDIR /tmp
 
-COPY --from=conf /exist/etc/conf.xml conf.xml 
-COPY --from=conf /exist/etc/webapp/WEB-INF/web.xml web.xml  
-
+COPY --from=conf /exist/etc/conf.xml conf.xml
+COPY --from=conf /exist/etc/webapp/WEB-INF/web.xml web.xml
 # Copy XSLT files
 COPY xslt/conf-transform.xsl conf-transform.xsl
 COPY xslt/web-transform.xsl web-transform.xsl
-
 # Apply security transformations
 RUN xsltproc conf-transform.xsl conf.xml > conf_prod.xml
 RUN xsltproc web-transform.xsl web.xml > web_prod.xml
