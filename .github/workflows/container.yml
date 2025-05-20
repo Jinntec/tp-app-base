@@ -5,7 +5,6 @@ on:
     # Publish `main` as Docker `:latest` image.
     branches:
       - main
-      - "release/*"
     # Publish `v1.2.3` tags as releases.
     tags:
       - v*
@@ -130,7 +129,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           sbom: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           # cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
           # cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max

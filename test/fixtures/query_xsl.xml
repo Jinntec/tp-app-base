@@ -1,0 +1,18 @@
+<query xmlns="http://exist.sourceforge.net/NS/exist">
+    <text
+    ><![CDATA[
+        xquery version "3.1";
+        declare namespace transform="http://exist-db.org/xquery/transform";
+        try {
+            let $xslt :=
+                <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+                    <xsl:template match="/">
+                        <xsl:value-of select="unparsed-text('file:///etc/passwd')"/>
+                    </xsl:template>
+                </xsl:stylesheet>
+            return transform:transform(<dummy/>, $xslt, ())
+        } catch * {
+            $err:description
+        }
+    ]]></text>
+</query>
