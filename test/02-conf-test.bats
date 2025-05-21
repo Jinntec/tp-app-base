@@ -19,11 +19,11 @@
 }
 
 @test "xsl submitted via query does not execute" {
-  result=$(curl -s --location 'http://127.0.0.1:8080/exist/rest/db' --header 'Content-Type: text/xml' --data-binary @test/fixtures/query_xsl.xml | grep -o -m 1 'nobody' | head -1 | tr -d '\n')
+  result=$(curl -s --location 'http://127.0.0.1:8080/exist/rest/db' --header 'Content-Type: text/xml' --data-binary @test/fixtures/query_xsl.xml | grep -o -m 1 'nobody' | head -1 )
   [ -z "$result" ]
 }
 
 @test "XXE mitigation is active" {
-  result=$(curl --location 'http://127.0.0.1:8080/exist/rest/db' --data-binary @test/fixtures/xxe.xml | grep -o -m 1 'nobody' | head -1 | tr -d '\n')
+  result=$(curl -s --location 'http://127.0.0.1:8080/exist/apps/tei-publisher/api/preview' --header 'Content-Type: application/xml' --data-binary @test/fixtures/xxe.xml | grep -o 'nobody' | head -1 | tr -d '\n')
   [ -z "$result" ]
 }
