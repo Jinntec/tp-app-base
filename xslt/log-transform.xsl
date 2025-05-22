@@ -23,23 +23,23 @@
 
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    version="1.0">
+  version="1.0">
+  <xsl:output method="xml" indent="yes" omit-xml-declaration="no" />
 
-    <xsl:output method="xml" indent="yes" omit-xml-declaration="no"/>
+  <!-- Match Root elements with attribute level='info' and Logger elements with attribute
+  name='org.exist.repo' -->
+  <xsl:template
+    match="Root[@level = 'info'][not(AppenderRef[@ref='STDOUT'])] | Logger[@name = 'org.exist.repo'][not(AppenderRef[@ref='STDOUT'])]">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*" />
+      <AppenderRef ref="STDOUT" />
+    </xsl:copy>
+  </xsl:template>
 
-    <!-- Match Root elements with attribute level='info' and Logger elements with attribute name='org.exist.repo' -->
-    <xsl:template match="Root[@level = 'info'] | Logger[@name = 'org.exist.repo']">
-        <xsl:copy>
-            <xsl:apply-templates select="node()|@*"/>
-            <AppenderRef ref="STDOUT"/>
-        </xsl:copy>
-    </xsl:template>
-
-    <!-- Identity transform -->
-    <xsl:template match="node()|@*">
-        <xsl:copy>
-            <xsl:apply-templates select="node()|@*"/>
-        </xsl:copy>
-    </xsl:template>
-
+  <!-- Identity transform -->
+  <xsl:template match="node()|@*">
+    <xsl:copy>
+      <xsl:apply-templates select="node()|@*" />
+    </xsl:copy>
+  </xsl:template>
 </xsl:stylesheet>
