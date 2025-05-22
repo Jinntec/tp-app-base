@@ -23,12 +23,6 @@
   [ "$result" == 'Server has started' ]
 }
 
-# Make sure the package has been deployed
-# @test "logs show package deployment" {
-#   result=$(docker logs exist | grep -om 1 'http://history.state.gov/ns/site/hsg')
-#   [ "$result" == 'http://history.state.gov/ns/site/hsg' ]
-# }
-
 @test "logs are error free" {
   result=$(docker logs exist | grep -ow -c 'ERROR' || true)
   [ "$result" -eq 0 ]

