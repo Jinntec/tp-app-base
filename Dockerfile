@@ -1,7 +1,6 @@
-ARG EXIST_BASE=6.4.0
+ARG EXIST_BASE=release
 
 FROM duncdrum/existdb:${EXIST_BASE} AS conf
-
 # RUN ["busybox", "rm", "-rf", "/exist/autodeploy/"]
 
 FROM debian:12-slim AS builder
@@ -27,7 +26,7 @@ ARG PUBLISHER_LIB_VERSION=4.0.2
 ARG ROUTER_VERSION=1.9.1
 ARG TEMPLATING_VERSION=1.2.1
 
-ARG USR=nonroot
+ARG USR=nonroot:nonroot
 
 USER ${USR}
 
