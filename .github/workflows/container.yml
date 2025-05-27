@@ -79,6 +79,10 @@ jobs:
     needs: build
 
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        EXIST_BASE: [6.2.0, 6.4.0, release, latest]
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/tags/v*'
 
     steps:
