@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        EXIST_BASE: [6.2.0, release, latest]
+        EXIST_BASE: [6.2.0, 6.4.0, release, latest]
     # NOTE (DP): Test on PRs and pushes
     if: github.ref == 'refs/heads/main' || github.base_ref ==  'main'
     steps:
@@ -79,7 +79,7 @@ jobs:
     needs: build
 
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/tags/v*'
 
     steps:
       - uses: actions/checkout@v4
@@ -104,6 +104,11 @@ jobs:
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}
+          label: |
+            maintainer=duncdrum
+            org.opencontainers.image.title=TEIpublisher app base
+            org.opencontainers.image.description=Base image for Tei_Publisher generated apps
+            org.opencontainers.image.vendor=Jinntec
 
       # was ${{ github.actor }}
       - name: Login to GHCR
@@ -121,17 +126,17 @@ jobs:
       #     password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push image
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/tags/v*'
         uses: docker/build-push-action@v6
         with:
           context: .
           platforms: linux/amd64,linux/arm64
           build-args: |
-            EXIST_BASE=release
+            EXIST_BASE=${{ matrix.EXIST_BASE }}
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           sbom: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.EXIST_BASE }}
           labels: ${{ steps.meta.outputs.labels }}
           # cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
           # cache-to: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
