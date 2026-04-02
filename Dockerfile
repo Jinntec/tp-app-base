@@ -3,7 +3,7 @@ ARG EXIST_BASE=release
 FROM duncdrum/existdb:${EXIST_BASE} AS conf
 # RUN ["busybox", "rm", "-rf", "/exist/autodeploy/"]
 
-FROM debian:12-slim AS builder
+FROM debian:13-slim AS builder
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update && apt-get -y install apt-utils && apt-get -y dist-upgrade && apt-get install -y --no-install-recommends \
