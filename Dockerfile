@@ -23,7 +23,7 @@ RUN xsltproc web-transform.xsl web.xml > web_prod.xml
 FROM duncdrum/existdb:${EXIST_BASE}-nonroot-slim
 
 ARG PUBLISHER_LIB_VERSION=4.0.4
-ARG ROUTER_VERSION=1.11.0
+ARG ROUTER_VERSION=1.13.1
 ARG TEMPLATING_VERSION=1.2.1
 
 ARG USR=nonroot:nonroot
