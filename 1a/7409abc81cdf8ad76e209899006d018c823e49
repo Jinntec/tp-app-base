@@ -1,0 +1,19 @@
+test/02-conf-test.bats
+  s_5b2cb45864e241::t_4b2831e469cb0f 17-26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "1a7409abc81cdf8ad76e209899006d018c823e49",
+  "prompts": {},
+  "sessions": {
+    "s_5b2cb45864e241": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5fd35c43-6f93-4ac2-aca3-a6c2b0d05471",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "duncdrum <d.paterson@me.com>"
+    }
+  }
+}
